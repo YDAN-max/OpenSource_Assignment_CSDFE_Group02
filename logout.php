@@ -1,7 +1,7 @@
 <?php
-
-/* 
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Scripting/EmptyPHP.php to edit this template
- */
-
+// logout.php
+require_once 'auth.php';
+$auth->logout();
+header('Location: login.php');
+exit();
+?>
