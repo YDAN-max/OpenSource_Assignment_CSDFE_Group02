@@ -9,7 +9,7 @@ $notFound = false;
 if(isset($_POST['search'])){
 
     $stmt = $conn->prepare(
-        "SELECT * FROM incidents
+        "SELECT * FROM report_incident
         WHERE incident_id=?"
     );
 

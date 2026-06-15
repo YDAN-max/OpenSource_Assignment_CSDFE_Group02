@@ -7,7 +7,7 @@ $message = "";
 if(isset($_POST['save'])){
 
     $stmt = $conn->prepare(
-        "INSERT INTO incidents(
+        "INSERT INTO report_incident(
             incident_id,
             incident_type,
             description,

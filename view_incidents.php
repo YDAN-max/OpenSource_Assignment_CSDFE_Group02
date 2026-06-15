@@ -2,9 +2,18 @@
 require 'auth.php';
 require 'config.php';
 
-$result = $conn->query(
-    "SELECT * FROM incidents ORDER BY date_reported DESC"
-);
+// Fetch statistics
+$totalQuery = $conn->query("SELECT COUNT(*) as total FROM report_incident");
+$totalIncidents = $totalQuery->fetch_assoc()['total'];
+
+$openQuery = $conn->query("SELECT COUNT(*) as openCount FROM report_incident WHERE status = 'Open'");
+$openIncidents = $openQuery->fetch_assoc()['openCount'];
+
+$highQuery = $conn->query("SELECT COUNT(*) as highCount FROM report_incident WHERE severity = 'High'");
+$highSeverity = $highQuery->fetch_assoc()['highCount'];
+
+// Fetch incidents data - use a different variable name
+$incidentsResult = $conn->query("SELECT * FROM report_incident ORDER BY date_reported DESC");
 ?>
 
 <!DOCTYPE html>
@@ -353,22 +362,11 @@ $result = $conn->query(
         <div class="nav-actions">
             <a href="dashboard.php" class="nav-btn">🏠 Dashboard</a>
             <a href="report_incident.php" class="nav-btn">➕ New Incident</a>
+            <a href="home.php" class="nav-btn">🏠 Home</a>
         </div>
     </div>
 
     <!-- Stats Section -->
-    <?php 
-        // Fetch statistics for better UX
-        $totalQuery = $conn->query("SELECT COUNT(*) as total FROM incidents");
-        $totalIncidents = $totalQuery->fetch_assoc()['total'];
-        
-        $openQuery = $conn->query("SELECT COUNT(*) as openCount FROM incidents WHERE status = 'Open'");
-        $openIncidents = $openQuery->fetch_assoc()['openCount'];
-        
-        $highQuery = $conn->query("SELECT COUNT(*) as highCount FROM incidents WHERE severity = 'High'");
-        $highSeverity = $highQuery->fetch_assoc()['highCount'];
-    ?>
-    
     <div class="stats-grid">
         <div class="stat-card">
             <div class="stat-icon">📊</div>
@@ -422,14 +420,10 @@ $result = $conn->query(
                 </tr>
             </thead>
             <tbody>
-                <?php 
-                    // Reset result pointer (since we used another query above)
-                    $result = $conn->query("SELECT * FROM incidents ORDER BY date_reported DESC");
-                    while($row = $result->fetch_assoc()): 
+                <?php while($row = $incidentsResult->fetch_assoc()): 
                     
                     // Severity class
                     $severityClass = '';
-                    $severityText = $row['severity'];
                     if($row['severity'] == 'Low') $severityClass = 'severity-low';
                     elseif($row['severity'] == 'Medium') $severityClass = 'severity-medium';
                     elseif($row['severity'] == 'High') $severityClass = 'severity-high';
@@ -444,7 +438,7 @@ $result = $conn->query(
                     <td><strong><?php echo htmlspecialchars($row['incident_id']); ?></strong></td>
                     <td><?php echo htmlspecialchars($row['incident_type']); ?></td>
                     <td class="desc-preview" title="<?php echo htmlspecialchars($row['description']); ?>">
-                        <?php echo htmlspecialchars(substr($row['description'], 0, 60)) . (strlen($row['description']) > 60 ? '...' : ''); ?>
+                        <?php echo htmlspecialchars(substr($row['description'] ?? '', 0, 60)) . ((strlen($row['description'] ?? '') > 60) ? '...' : ''); ?>
                     </td>
                     <td>
                         <span class="severity-badge <?php echo $severityClass; ?>">
