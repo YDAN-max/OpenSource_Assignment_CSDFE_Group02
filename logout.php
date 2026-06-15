@@ -1,7 +1,9 @@
 <?php
-// logout.php
-require_once 'auth.php';
-$auth->logout();
-header('Location: login.php');
+session_start();
+
+session_destroy();
+
+header("Location: login.php");
+
 exit();
 ?>

@@ -1,9 +1,8 @@
-
 <?php
 $conn = new mysqli(
     "localhost",
-    "root",
-    "",
+    "incident_user",
+    "incident123",
     "security_incident_db"
 );
 

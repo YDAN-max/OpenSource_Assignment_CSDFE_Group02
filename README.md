@@ -22,4 +22,4 @@ A PHP-based system used to record, manage, and search security incidents.
 2. Import the database.
 3. Place the project in /var/www/html.
 4. Start Apache and MariaDB.
-5. Open localhost/SecurityIncidentReportingSystem..
+5. Open localhost/SecurityIncidentReportSystem..
